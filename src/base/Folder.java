@@ -76,6 +76,7 @@ public class Folder implements Comparable<Folder>
 		String keywords2 = keywords.toLowerCase();
 		ArrayList<String> andWords = new ArrayList<String>();
 		ArrayList<String> orWords = new ArrayList<String>();
+		boolean goToAndWords = true;
 
 		String[] words = keywords2.split(" ");
 
@@ -86,11 +87,23 @@ public class Folder implements Comparable<Folder>
 		{
 			if (words[i].equals("or"))
 			{
-				andWords.remove(words[i - 1]);
-				orWords.add(words[i - 1] + " " + words[i + 1]);
+				if (goToAndWords)
+				{
+					andWords.remove(words[i - 1]);
+					orWords.add(words[i - 1] + " " + words[i + 1]);
+				} else
+				{
+					String tempStr = orWords.remove(orWords.size() - 1);
+					orWords.add(tempStr + " " + words[i + 1]);
+
+				}
+				goToAndWords = false;
 				i++;
 			} else
+			{
 				andWords.add(words[i]);
+				goToAndWords = true;
+			}
 		}
 
 		for (Note note : this.notes)
@@ -98,9 +111,11 @@ public class Folder implements Comparable<Folder>
 			boolean match = true;
 			for (String orWord : orWords)
 			{
+				boolean tempBool = false;
 				String[] arr = orWord.split(" ");
-				match = match && (note.getTitle().toLowerCase().contains(arr[0])
-						|| note.getTitle().toLowerCase().contains(arr[1]));
+				for (String s : arr)
+					tempBool = tempBool || note.getTitle().toLowerCase().contains(s);
+				match = match && tempBool;
 			}
 			for (String andWord : andWords)
 				match = match && (note.getTitle().toLowerCase().contains(andWord));
@@ -110,9 +125,11 @@ public class Folder implements Comparable<Folder>
 				TextNote tn = (TextNote) note;
 				for (String orWord : orWords)
 				{
+					boolean tempBool = false;
 					String[] arr = orWord.split(" ");
-					match2 = match2
-							&& (tn.content.toLowerCase().contains(arr[0]) || tn.content.toLowerCase().contains(arr[1]));
+					for (String s : arr)
+						tempBool = tempBool || tn.content.toLowerCase().contains(s);
+					match2 = match2 && tempBool;
 				}
 				for (String andWord : andWords)
 					match2 = match2 && (tn.content.toLowerCase().contains(andWord));

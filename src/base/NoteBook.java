@@ -1,96 +1,119 @@
 package base;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class NoteBook
-{
-	private ArrayList<Folder> folders;
+public class NoteBook implements Comparable<NoteBook>, Serializable {
+    private static final long serialVersionUID = 1L;
+    private ArrayList<Folder> folders;
 
-	public NoteBook()
-	{
-		this.folders = new ArrayList<Folder>();
-	}
+    public NoteBook() {
+        this.folders = new ArrayList<Folder>();
+    }
 
-	public boolean createTextNote(String s1, String s2)
-	{
-		TextNote note = new TextNote(s2);
-		return insertNote(s1, note);
-	}
+    public NoteBook(String file) {
+        try {
+            // TODO
+            FileInputStream fis = new FileInputStream(file);
+            ObjectInputStream in = new ObjectInputStream(fis);
 
-	public boolean createImageNote(String s1, String s2)
-	{
-		ImageNote note = new ImageNote(s2);
-		return insertNote(s1, note);
-	}
+            NoteBook n = (NoteBook) in.readObject();
+            //TODO
+            this.folders = n.folders;
+            in.close();
 
-	private boolean insertNote(String s, Note n)
-	{
+        } catch (IOException e) {
+            System.out.println(e.toString());
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.toString());
+        }
+    }
 
-		boolean exist = false;
-		Folder tempFolder = null;
-		for (Folder f : folders)
-		{
-			if (f.getName().equals(s))
-			{
-				exist = true;
-				tempFolder = f;
-			}
-		}
+    public boolean createTextNote(String s1, String s2) {
+        TextNote note = new TextNote(s2);
+        return insertNote(s1, note);
+    }
 
-		if (!exist)
-		{
-			tempFolder = new Folder(s);
-			tempFolder.addNote(n);
-			this.folders.add(tempFolder);
-		} else
-		{
-			boolean existN = false;
-			for (Note temp : tempFolder.getNotes())
-			{
-				if (temp.equals(n))
-					existN = true;
-			}
-			if (!existN)
-			{
-				tempFolder.addNote(n);
+    public boolean createImageNote(String s1, String s2) {
+        ImageNote note = new ImageNote(s2);
+        return insertNote(s1, note);
+    }
 
-			} else
-			{
-				existN = true;
-				System.out.println("Create note" + n.getTitle() + " under folder " + s + " failed");
-				return false;
-			}
-		}
-		return true;
-	}
+    private boolean insertNote(String s, Note n) {
 
-	public ArrayList<Folder> getFolders()
-	{
-		return this.folders;
-	}
+        boolean exist = false;
+        Folder tempFolder = null;
+        for (Folder f : folders) {
+            if (f.getName().equals(s)) {
+                exist = true;
+                tempFolder = f;
+            }
+        }
 
-	public void sortFolders()
-	{
-		Collections.sort(this.folders);
-		for (Folder f : this.folders)
-		{
-			f.sortNotes();
-		}
-	}
+        if (!exist) {
+            tempFolder = new Folder(s);
+            tempFolder.addNote(n);
+            this.folders.add(tempFolder);
+        } else {
+            boolean existN = false;
+            for (Note temp : tempFolder.getNotes()) {
+                if (temp.equals(n))
+                    existN = true;
+            }
+            if (!existN) {
+                tempFolder.addNote(n);
 
-	public List<Note> searchNotes(String keywords)
-	{
-		List<Note> result = new ArrayList<Note>();
-		for (Folder f : this.folders)
-			result.addAll(f.searchNotes(keywords));
-		return result;
-	}
+            } else {
+                existN = true;
+                System.out.println("Create note" + n.getTitle() + " under folder " + s + " failed");
+                return false;
+            }
+        }
+        return true;
+    }
 
-	public boolean createTextNote(String folderName, String title, String content)
-	{
-		TextNote note = new TextNote(title, content);
-		return insertNote(folderName, note);
-	}
+    public ArrayList<Folder> getFolders() {
+        return this.folders;
+    }
+
+    public void sortFolders() {
+        Collections.sort(this.folders);
+        for (Folder f : this.folders) {
+            f.sortNotes();
+        }
+    }
+
+    public List<Note> searchNotes(String keywords) {
+        List<Note> result = new ArrayList<Note>();
+        for (Folder f : this.folders)
+            result.addAll(f.searchNotes(keywords));
+        return result;
+    }
+
+    public boolean createTextNote(String folderName, String title, String content) {
+        TextNote note = new TextNote(title, content);
+        return insertNote(folderName, note);
+    }
+
+    public boolean save(String file) {
+        //TODO
+        try {
+            //TODO
+            FileOutputStream fos = new FileOutputStream(file);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(this);
+            oos.close();
+        } catch (Exception e) {
+//            System.out.println(e.toString());
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int compareTo(NoteBook noteBook) {
+        return 0;
+    }
 }

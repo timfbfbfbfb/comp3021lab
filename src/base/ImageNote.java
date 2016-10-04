@@ -1,9 +1,11 @@
 package base;
 
-public class ImageNote extends Note{
+import java.io.Serializable;
 
-	public ImageNote(String s) {
-		super(s);
-	}
+public class ImageNote extends Note implements Serializable {
+
+    public ImageNote(String s) {
+        super(s);
+    }
 
 }

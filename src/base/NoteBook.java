@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class NoteBook implements Comparable<NoteBook>, Serializable {
+public class NoteBook implements Serializable {
     private static final long serialVersionUID = 1L;
     private ArrayList<Folder> folders;
 
@@ -110,10 +110,5 @@ public class NoteBook implements Comparable<NoteBook>, Serializable {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public int compareTo(NoteBook noteBook) {
-        return 0;
     }
 }

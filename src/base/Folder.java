@@ -49,7 +49,6 @@ public class Folder implements Comparable<Folder>, Serializable {
         }
     }
 
-    @Override
     public int compareTo(Folder o) {
         // TODO Auto-generated method stub
         return this.name.compareTo(o.name);

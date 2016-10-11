@@ -41,7 +41,6 @@ public class Note implements Comparable<Note>, Serializable {
         return true;
     }
 
-    @Override
     public int compareTo(Note o) {
         // TODO Auto-generated method stub
         return -this.date.compareTo(o.date);

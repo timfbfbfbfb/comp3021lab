@@ -6,117 +6,128 @@ import java.util.Collections;
 import java.util.List;
 
 public class Folder implements Comparable<Folder>, Serializable {
-    private ArrayList<Note> notes;
-    private String name;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+	private ArrayList<Note> notes;
+	private String name;
 
-    public Folder(String s) {
-        name = s;
-        notes = new ArrayList<Note>();
-    }
+	public Folder(String s) {
+		name = s;
+		notes = new ArrayList<Note>();
+	}
 
-    public void addNote(Note note) {
-        notes.add(note);
-    }
+	public void addNote(Note note) {
+		notes.add(note);
+	}
 
-    public String getName() {
-        return this.name;
-    }
+	public boolean removeNotes(String title) {
+		// TODO
+		// Given the title of the note, delete it from the folder.
+		// Return true if it is deleted successfully, otherwise return false.
+		return notes.remove(new Note(title));
+	}
 
-    public ArrayList<Note> getNotes() {
-        return this.notes;
-    }
+	public String getName() {
+		return this.name;
+	}
 
-    public String toString() {
-        String temp = this.name;
-        int nText = 0, nImage = 0;
+	public ArrayList<Note> getNotes() {
+		return this.notes;
+	}
 
-        for (Note n : this.notes) {
-            if (n instanceof TextNote)
-                nText++;
-            if (n instanceof ImageNote)
-                nImage++;
-        }
+	public String toString() {
+		String temp = this.name;
+		int nText = 0, nImage = 0;
 
-        return temp + ":" + nText + ":" + nImage;
-    }
+		for (Note n : this.notes) {
+			if (n instanceof TextNote)
+				nText++;
+			if (n instanceof ImageNote)
+				nImage++;
+		}
 
-    public boolean equals(Object obj) {
-        try {
-            Folder temp = (Folder) obj;
-            return this.name.equals(temp.name);
-        } catch (ClassCastException e) {
-            return false;
-        }
-    }
+		return temp + ":" + nText + ":" + nImage;
+	}
 
-    public int compareTo(Folder o) {
-        // TODO Auto-generated method stub
-        return this.name.compareTo(o.name);
-    }
+	public boolean equals(Object obj) {
+		try {
+			Folder temp = (Folder) obj;
+			return this.name.equals(temp.name);
+		} catch (ClassCastException e) {
+			return false;
+		}
+	}
 
-    public void sortNotes() {
-        Collections.sort(this.notes);
-    }
+	public int compareTo(Folder o) {
+		// TODO Auto-generated method stub
+		return this.name.compareTo(o.name);
+	}
 
-    public List<Note> searchNotes(String keywords) {
-        List<Note> result = new ArrayList<Note>();
-        String keywords2 = keywords.toLowerCase();
-        ArrayList<String> andWords = new ArrayList<String>();
-        ArrayList<String> orWords = new ArrayList<String>();
-        boolean goToAndWords = true;
+	public void sortNotes() {
+		Collections.sort(this.notes);
+	}
 
-        String[] words = keywords2.split(" ");
+	public List<Note> searchNotes(String keywords) {
+		List<Note> result = new ArrayList<Note>();
+		String keywords2 = keywords.toLowerCase();
+		ArrayList<String> andWords = new ArrayList<String>();
+		ArrayList<String> orWords = new ArrayList<String>();
+		boolean goToAndWords = true;
 
-        if (words.length == 0)
-            return result;
+		String[] words = keywords2.split(" ");
 
-        for (int i = 0; i < words.length; i++) {
-            if (words[i].equals("or")) {
-                if (goToAndWords) {
-                    andWords.remove(words[i - 1]);
-                    orWords.add(words[i - 1] + " " + words[i + 1]);
-                } else {
-                    String tempStr = orWords.remove(orWords.size() - 1);
-                    orWords.add(tempStr + " " + words[i + 1]);
+		if (words.length == 0)
+			return result;
 
-                }
-                goToAndWords = false;
-                i++;
-            } else {
-                andWords.add(words[i]);
-                goToAndWords = true;
-            }
-        }
+		for (int i = 0; i < words.length; i++) {
+			if (words[i].equals("or")) {
+				if (goToAndWords) {
+					andWords.remove(words[i - 1]);
+					orWords.add(words[i - 1] + " " + words[i + 1]);
+				} else {
+					String tempStr = orWords.remove(orWords.size() - 1);
+					orWords.add(tempStr + " " + words[i + 1]);
 
-        for (Note note : this.notes) {
-            boolean match = true;
-            for (String orWord : orWords) {
-                boolean tempBool = false;
-                String[] arr = orWord.split(" ");
-                for (String s : arr)
-                    tempBool = tempBool || note.getTitle().toLowerCase().contains(s);
-                match = match && tempBool;
-            }
-            for (String andWord : andWords)
-                match = match && (note.getTitle().toLowerCase().contains(andWord));
-            if (note instanceof TextNote) {
-                boolean match2 = true;
-                TextNote tn = (TextNote) note;
-                for (String orWord : orWords) {
-                    boolean tempBool = false;
-                    String[] arr = orWord.split(" ");
-                    for (String s : arr)
-                        tempBool = tempBool || tn.content.toLowerCase().contains(s);
-                    match2 = match2 && tempBool;
-                }
-                for (String andWord : andWords)
-                    match2 = match2 && (tn.content.toLowerCase().contains(andWord));
-                match = match || match2;
-            }
-            if (match)
-                result.add(note);
-        }
+				}
+				goToAndWords = false;
+				i++;
+			} else {
+				andWords.add(words[i]);
+				goToAndWords = true;
+			}
+		}
 
-        return result;
-    }
+		for (Note note : this.notes) {
+			boolean match = true;
+			for (String orWord : orWords) {
+				boolean tempBool = false;
+				String[] arr = orWord.split(" ");
+				for (String s : arr)
+					tempBool = tempBool || note.getTitle().toLowerCase().contains(s);
+				match = match && tempBool;
+			}
+			for (String andWord : andWords)
+				match = match && (note.getTitle().toLowerCase().contains(andWord));
+			if (note instanceof TextNote) {
+				boolean match2 = true;
+				TextNote tn = (TextNote) note;
+				for (String orWord : orWords) {
+					boolean tempBool = false;
+					String[] arr = orWord.split(" ");
+					for (String s : arr)
+						tempBool = tempBool || tn.content.toLowerCase().contains(s);
+					match2 = match2 && tempBool;
+				}
+				for (String andWord : andWords)
+					match2 = match2 && (tn.content.toLowerCase().contains(andWord));
+				match = match || match2;
+			}
+			if (match)
+				result.add(note);
+		}
+
+		return result;
+	}
 }

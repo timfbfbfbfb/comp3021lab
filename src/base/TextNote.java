@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.HashMap;
 
 public class TextNote extends Note implements Serializable {
+	private static final long serialVersionUID = 1L;
 	protected String content;
 
 	public TextNote(String s) {

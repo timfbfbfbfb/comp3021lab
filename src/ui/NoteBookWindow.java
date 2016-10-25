@@ -266,6 +266,7 @@ public class NoteBookWindow extends Application {
 			public void handle(ActionEvent event) {
 				// TODO Auto-generated method stub
 				currentSearch = "";
+				currentNote = "";
 				searchBox.setText("");
 				textAreaNote.setText("");
 				currentNote = "";
